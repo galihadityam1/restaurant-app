@@ -4,9 +4,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Register = () => {
   let navigate = useNavigate();
   let [input, setInput] = useState({
+    fullName: "",
     email: "",
     password: "",
   });
@@ -23,21 +24,19 @@ const Login = () => {
   const SubmitForm = async (event) => {
     event.preventDefault();
     try {
-      let { data } = await axios({
+      await axios({
         method: "post",
-        url: `http://localhost:3010/login`,
+        url: `http://localhost:3010/register`,
         data: input,
       });
-      console.log(data.access_token);
 
-      localStorage.setItem("access_token", data.access_token);
       Swal.fire({
         icon: "success",
-        title: "Success Login",
+        title: "Success Register",
         showConfirmButton: false,
         timer: 1500,
       });
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -309,7 +308,7 @@ const Login = () => {
         <div className="w-full bg-gray-100 lg:w-1/2 flex items-center justify-center">
           <div className="max-w-md w-full p-6">
             <h1 className="text-3xl font-semibold mb-6 text-black text-center">
-              Sign In
+              Sign Up
             </h1>
             <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
               Join to Our Community with all time access and free{" "}
@@ -319,6 +318,18 @@ const Login = () => {
               <p>or with email</p>
             </div>
             <form action="#" onSubmit={SubmitForm} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  onChange={handelOnChange}
+                  className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Email
@@ -347,15 +358,15 @@ const Login = () => {
                 <button
                   type="submit"
                   className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300">
-                  Sign Up
+                  Sign In
                 </button>
               </div>
             </form>
             <div className="mt-4 text-sm text-gray-600 text-center">
               <p>
-                Not have an account?{" "}
-                <Link to={"/register"}>
-                  <a className="text-black hover:underline">Register</a>
+                Already have an account?{" "}
+                <Link to={"/login"}>
+                  <a className="text-black hover:underline">Login here</a>
                 </Link>
               </p>
             </div>
@@ -366,4 +377,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
