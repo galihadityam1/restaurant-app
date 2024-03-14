@@ -1,0 +1,12 @@
+[
+    {
+        "fullName" : "iniCoba",
+        "email" : "inicoba@email.com",
+        "password" : "inicoba"
+    },
+    {
+        "fullName" : "iniCoba2",
+        "email" : "inicoba2@email.com",
+        "password" : "inicoba2"
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "UserId" : 1,
+        "MenuId" : 1,
+        "note" : "inicoba"
+    },
+    {
+        "UserId" : 2,
+        "MenuId" : 2,
+        "note" : "inicoba2"
+    }
+]
