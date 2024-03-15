@@ -1,5 +1,7 @@
-const { Menu, Order } = require("../models/index.js");
-
+const { Menu, Order, User } = require("../models/index.js");
+const ImageKit = require("imagekit");
+const midtransClient = require('midtrans-client');
+const axios = require('axios');
 class Controller {
   static async getAllMenu(req, res, next) {
     try {
@@ -125,17 +127,128 @@ class Controller {
 
   static async addOrder(req, res, next) {
     try {
-        let UserId = req.user.id
-        let MenuId = req.params.id
+      let UserId = req.user.id;
+      // console.log(req.params);
+      let {id} = req.params
 
-        let order = await Order.create({
-            UserId, MenuId
-        })
+      let menu = await Menu.findByPk(id)
+      let totalOrder = await Order.findAll({where: {UserId}})
+      // let MenuId = req.params.id;
+      // console.log(menu);
 
-      res.status(201).json({ message: "Order has been create", order });
+      let snap = new midtransClient.Snap({
+        isProduction: false,
+        serverKey: process.env.SERVER_KEY_MIDTRANS,
+      });
+
+      let order = await Order.create({
+        UserId,
+        MenuId: menu.id,
+        price: menu.price
+      });
+
+      let parameter = {
+        transaction_details: {
+          order_id:
+            "TRANSACTION_" +
+            order.id +
+            (process.env.NODE_ENV === "production" ? "" : "_dev"),
+          gross_amount: order.price,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          username: req.user.fullName,
+          email: req.user.email,
+        },
+      };
+
+      const transaction = await snap.createTransaction(parameter);
+      let transactionToken = transaction.token;
+      let orderId = parameter.transaction_details.order_id;
+
+      console.log(transaction);
+
+      await order.update({
+        orderId,
+      });
+
+      res.json({ message: "Booking Created", transactionToken, orderId });
+
+      // res.status(201).json({ message: "Order has been create", order });
     } catch (error) {
-        console.log(error);
-        next(error)
+      console.log(error);
+      next(error);
+    }
+  }
+
+  static async patchPayment(req, res, next) {
+    try {
+      const { orderId } = req.body;
+
+      const order = await Order.findOne({ where: { orderId } });
+
+      if (!order) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      if (order.status === 'paid') {
+        return res.status(400).json({ message: "Booking alreay paid" });
+      }
+
+      const serverKey = process.env.SERVER_KEY_MIDTRANS;
+      const base64server = Buffer.from(serverKey + ":").toString("base64");
+      const response = await axios.get(
+        `https://api.sandbox.midtrans.com/v2/${orderId}/status`,
+        {
+          headers: {
+            Authorization: `Basic ${base64server}`,
+          },
+        }
+      );
+
+      if (
+        response.data.transaction_status === "settlement" &&
+        response.data.status_code === "200"
+      ) {
+        await order.update({ status: 'paid' });
+        res.json({ message: `Thank you for your payment` });
+      } else {
+        res.status(400).json({ message: `Please check your payment detail` });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async editImage(req, res, next) {
+    try {
+      let menu = await Menu.findOne({
+        where: { ...req.params },
+      });
+
+      const base64Image = req.file.buffer.toString("base64");
+      const base64URL = `data:${req.file.mimetype};base64,${base64Image}`;
+
+      let imagekit = new ImageKit({
+        publicKey: "public_BvPyQYVAjIiPOFsjKdvmwGYIw6w=",
+        privateKey: "private_Y4VWiivvPf5qwU6eZkH2B9LuOUA=",
+        urlEndpoint: "https://ik.imagekit.io/zbcidgkzgm",
+      });
+
+      let imageURL = await imagekit.upload({
+        file: base64URL, //required
+        fileName: req.file.originalname, //required
+        tags: ["tag1", "tag2"],
+      });
+
+      await menu.update({ image: imageURL.url })
+
+      // console.log(imageURL);
+      res.status(200).json({ message: "Berhasil mengubah image", menu });
+    } catch (error) {
+      console.log(error);
     }
   }
 }

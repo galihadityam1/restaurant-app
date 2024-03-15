@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     UserId: DataTypes.INTEGER,
     MenuId: DataTypes.INTEGER,
     note: DataTypes.STRING,
+    price: DataTypes.INTEGER,
+    orderId: DataTypes.INTEGER,
     status: {
       type: DataTypes.STRING,
       defaultValue: 'waiting for payment'
