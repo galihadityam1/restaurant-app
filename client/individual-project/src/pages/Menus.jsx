@@ -1,82 +1,167 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import Card from '../components/Card'
-import BASE_URL from '../assets/constant'
+import React, { useEffect, useState } from "react";
+import { FaCaretDown } from "react-icons/fa";
+import axios from "axios";
+import Card from "../components/Card";
+import BASE_URL from "../assets/constant";
+const sortList = [
+  {
+    id: 1,
+    name: "Price",
+    value: "price",
+  },
+  {
+    id: 2,
+    name: "Calories",
+    value: "calories",
+  },
+];
 
 const Menus = () => {
-  const [menus, setMenus] = useState([])
-  let token = localStorage.getItem('access_token')
+  const [menus, setMenus] = useState([]);
+  const [page, setPage] = useState();
+  const [params, setParams] = useState({});
+
+  let token = localStorage.getItem("access_token");
+
+  function handlePage(number) {
+    // console.log(number);
+    setParams({ ...params, "page[number]": number });
+  }
 
   const FetchMenu = async () => {
     try {
       let data = await axios({
-        method: 'get',
+        method: "get",
         url: `${BASE_URL}/menu`,
+        params: params,
         headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      // console.log(data.data.data);
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // console.log(data);
 
-      setMenus(data.data.data)
+      setMenus(data.data.data);
+      setPage(data.data.totalPage);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    FetchMenu()
-  }, [])
+    FetchMenu();
+  }, [params]);
+
+  const sort = (value) => {
+    if (value === "price") {
+      setParams({ ...params, sort: value });
+    } else if (value === "calories") {
+      setParams({ ...params, sort: value });
+    } else {
+      setParams({ ...params, sort: undefined });
+    }
+  };
+
+  const handleSort = (event) => {
+    // console.log(event);
+    const { value } = event;
+    sort(value);
+  };
+
+  let totalPage = [];
+  for (let i = 1; i <= page; i++) {
+    totalPage.push(i);
+  }
 
   return (
     <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray- py-6 sm:py-12 bg-gradient-to-br from-fuchsia-50 to-fuchsia-200">
-    <div className="mx-auto max-w-screen-xl px-4 w-full">
-      <h2 className="mb-4 font-bold text-xl text-gray-600">Menu List.</h2>
-      <div className="grid w-full sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        {menus && menus.map((menu) => (
-          <Card menu={menu} key={menu.id}/>
-        ))}
-        
-        
-        {/* <div class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm">
-          <a href="" class="hover:text-orange-600 absolute z-30 top-2 right-0 mt-2 mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-            </svg>
+      <div>
+        <div className="cursot-pointer group relative justify-center items-center w-15">
+          <a
+            href=""
+            className="inline-block hover:text-primary text-xl font-semibold">
+            <div className="flex items-center justify-center px-10 gap-[2px] py-2 ">
+              Sort by
+              <span>
+                <FaCaretDown className="group-hover:rotate-180 duration-300" />
+              </span>
+            </div>
           </a>
-          <a href="" class="z-20 absolute h-full w-full top-0 left-0 ">&nbsp;</a>
-          <div class="h-auto overflow-hidden">
-            <div class="h-44 overflow-hidden relative">
-              <img src="https://picsum.photos/400/400" alt=""/>
-            </div>
+
+          {/* dropdown section */}
+          <div className=" absolute hidden z-[999] group-hover:block w-[200px] bg-white text-black shadow-md p-2">
+            <ul>
+              {sortList.map(({ id, name, value }) => (
+                <li key={id}>
+                  <a
+                    onClick={() => {
+                      handleSort({ value });
+                    }}
+                    className="text-xl inline-block w-full rounded-md p-2 hover:bg-primary/20">
+                    {name}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div class="bg-white py-4 px-3">
-            <h3 class="text-xs mb-2 font-medium">Des cadeaux incroyables prêts à être utilisés dans votre prochain projet</h3>
-            <div class="flex justify-between items-center">
-              <p class="text-xs text-gray-400">
-              Lorem, ipsum dolor sit amet
-            </p>
-            <div class="relative z-40 flex items-center gap-2">
-              <a class="text-orange-600 hover:text-blue-500" href="">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>
+        </div>
+      </div>
+      <div className="mx-auto max-w-screen-xl px-4 w-full">
+        <h2 className="mb-4 font-bold text-xl text-gray-600">Menu List.</h2>
+        <div className="grid w-full sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          {menus && menus.map((menu) => <Card menu={menu} key={menu.id} />)}
+        </div>
+        {/* <!-- component --> */}
+        <nav className="gap-4 py-10 items-center justify-center flex">
+          <ul className="flex">
+            <li>
+              <a
+                className="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
+                href="#"
+                aria-label="Previous">
+                <span className="material-icons text-sm">
+                  keyboard_arrow_left
+                </span>
               </a>
-              <a class="text-orange-600 hover:text-blue-500" href="">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-              </svg>
+            </li>
+            {page
+              ? totalPage.map((el, i) => (
+                  <li key={el} className="page-item" name="page[number]">
+                    <a
+                      onClick={() => handlePage(el)}
+                      className="mx-1 flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-pink-600 to-pink-400 p-0 text-sm text-white shadow-md shadow-pink-500/20 transition duration-150 ease-in-out"
+                      href="#">
+                      {el}
+                    </a>
+                  </li>
+                ))
+              : ""}
+            <li>
+              <a
+                className="mx-1 flex h-9 w-9 items-center justify-center rounded-full border border-blue-gray-100 bg-transparent p-0 text-sm text-blue-gray-500 transition duration-150 ease-in-out hover:bg-light-300"
+                href="#"
+                aria-label="Next">
+                <span className="material-icons text-sm">
+                  keyboard_arrow_right
+                </span>
               </a>
-            </div>
-            </div>
-          </div>
-        </div> */}
-        
-        
+            </li>
+          </ul>
+        </nav>
+
+        {/* <!-- stylesheet --> */}
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css"
+        />
+        {/* <!-- Material Icons Link --> */}
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
+        <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
       </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-export default Menus
+export default Menus;

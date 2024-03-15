@@ -174,36 +174,37 @@ class Controller {
 
       const transaction = await snap.createTransaction(parameter);
       let transactionToken = transaction.token;
+      let transactionUrl = transaction.redirect_url
       let orderId = parameter.transaction_details.order_id;
 
-      console.log(transaction);
+      // console.log(transaction);
 
       await order.update({
         orderId,
       });
 
-      if (transactionToken) {
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: "galihadityam1@gmail.com",
-            pass: "hzwl evhq ovgn eyqm",
-          },
-        });
-        async function main() {
-          const info = await transporter.sendMail({
-            from: "galihadityam1@gmail.com",
-            to: `bulldog.07.id@gmail.com`,
-            subject: "Order Success",
-            text: "Your Order was successful create",
-          });
+      // if (transactionToken) {
+      //   const transporter = nodemailer.createTransport({
+      //     service: "gmail",
+      //     auth: {
+      //       user: "galihadityam1@gmail.com",
+      //       pass: "hzwl evhq ovgn eyqm",
+      //     },
+      //   });
+      //   async function main() {
+      //     const info = await transporter.sendMail({
+      //       from: "galihadityam1@gmail.com",
+      //       to: `bulldog.07.id@gmail.com`,
+      //       subject: "Order Success",
+      //       text: "Your Order was successful create",
+      //     });
 
-          console.log("Message sent: %", info.messageId);
-        }
-        main().catch(console.error);
-      }
+      //     console.log("Message sent: %", info.messageId);
+      //   }
+      //   main().catch(console.error);
+      // }
 
-      res.json({ message: "Order Created", transactionToken, orderId });
+      res.json({ message: "Order Created", transactionToken, transactionUrl, orderId });
 
       // res.status(201).json({ message: "Order has been create", order });
     } catch (error) {

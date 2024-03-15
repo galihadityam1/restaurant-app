@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaCartPlus } from "react-icons/fa";
+import axios from "axios";
+import BASE_URL from "../assets/constant";
+import { redirect, useNavigate } from "react-router-dom";
 
 const Card = ({ menu }) => {
   let currency = new Intl.NumberFormat("id-ID", {
     currency: "IDR",
     style: "currency",
   }).format(menu.price);
+  //   let [transactionToken, setTransactionToken] = useState()
+  let navigate = useNavigate();
+  let token = localStorage.getItem("access_token");
 
-  const addToCart = async () => {
+  const addToCart = async ({ id }) => {
     try {
-        await axios({
-            
-        })
+      // console.log(id);
+      let data = await axios({
+        method: "post",
+        url: `${BASE_URL}/menu/${id}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // navigate(`${data.transactionUrl}`)
     } catch (error) {
       console.log(error);
     }
@@ -39,8 +52,8 @@ const Card = ({ menu }) => {
         <a href="" className="z-20 absolute h-full w-full top-0 left-0 ">
           &nbsp;
         </a>
-        <div className="h-auto overflow-hidden">
-          <div className="h-44 overflow-hidden relative">
+        <div className="h-auto overflow-hidden w-full">
+          <div className="h-44 overflow-hidden relative w-full">
             <img src={menu.image} alt="" />
           </div>
         </div>
@@ -49,7 +62,11 @@ const Card = ({ menu }) => {
           <div className="flex justify-between items-center">
             <p className="text-xs text-gray-400">{currency}</p>
             <div className="relative z-40 flex items-center gap-2">
-              <a className="text-orange-600 hover:text-blue-500" href="">
+              <a
+                className="text-orange-600 hover:text-blue-500"
+                onClick={() => {
+                  addToCart({ id: menu.id });
+                }}>
                 <FaCartPlus className="h-4 w-5" />
               </a>
               <a className="text-orange-600 hover:text-blue-500" href=""></a>
