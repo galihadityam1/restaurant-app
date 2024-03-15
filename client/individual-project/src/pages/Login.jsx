@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-// import BASE_URL from "../assets/constant";
+import BASE_URL from "../assets/constant";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -25,7 +25,7 @@ const Login = () => {
     try {
       let { data } = await axios({
         method: "post",
-        url: `http://localhost:3010/login`,
+        url: `${BASE_URL}/login`,
         data: input,
       });
       console.log(data.access_token);
@@ -315,9 +315,6 @@ const Login = () => {
               Join to Our Community with all time access and free{" "}
             </h1>
             <div className="mt-4 flex flex-col lg:flex-row items-center justify-between"></div>
-            <div className="mt-4 text-sm text-gray-600 text-center">
-              <p>or with email</p>
-            </div>
             <form action="#" onSubmit={SubmitForm} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">

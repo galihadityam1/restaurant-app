@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-// import BASE_URL from "../assets/constant";
+import BASE_URL from "../assets/constant";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -26,7 +26,7 @@ const Register = () => {
     try {
       await axios({
         method: "post",
-        url: `http://localhost:3010/register`,
+        url: `${BASE_URL}register`,
         data: input,
       });
 
