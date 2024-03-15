@@ -20,8 +20,10 @@ class UserController {
         },
       });
       const payload = { id: user.id };
-      const token = signToken(payload);
-      res.status(200).json({ message: `Success Logged in as ${email}`, token });
+      const access_token = signToken(payload);
+      res
+        .status(200)
+        .json({ message: `Success Logged in as ${email}`, access_token });
     } catch (error) {
       console.log(error);
       next(error);
@@ -53,9 +55,9 @@ class UserController {
         id: user.id,
         email: user.email,
       };
-      const token = Helper.signToken(payLoad);
+      const access_token = Helper.signToken(payLoad);
 
-      res.status(200).json({ message: "success login", token });
+      res.status(200).json({ message: "success login", access_token });
     } catch (error) {
       next(error);
     }

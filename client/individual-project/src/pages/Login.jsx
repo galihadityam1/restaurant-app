@@ -28,7 +28,7 @@ const Login = () => {
         url: `${BASE_URL}/login`,
         data: input,
       });
-      console.log(data.access_token);
+      console.log(data);
 
       localStorage.setItem("access_token", data.access_token);
       Swal.fire({

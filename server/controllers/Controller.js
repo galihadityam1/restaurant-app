@@ -1,7 +1,9 @@
 const { Menu, Order, User } = require("../models/index.js");
 const ImageKit = require("imagekit");
-const midtransClient = require('midtrans-client');
-const axios = require('axios');
+const midtransClient = require("midtrans-client");
+const axios = require("axios");
+const nodemailer = require("nodemailer");
+
 class Controller {
   static async getAllMenu(req, res, next) {
     try {
@@ -129,10 +131,14 @@ class Controller {
     try {
       let UserId = req.user.id;
       // console.log(req.params);
-      let {id} = req.params
+      let MenuId = req.params.id;
 
-      let menu = await Menu.findByPk(id)
-      let totalOrder = await Order.findAll({where: {UserId}})
+      let menu = await Menu.findByPk(MenuId);
+      // let totalOrder = await Order.findOne({ where: { UserId, MenuId } });
+      // console.log(totalOrder);
+      // if (totalOrder){
+      //   totalOrder.update({ amount: totalOrder.amount + 1})
+      // }
       // let MenuId = req.params.id;
       // console.log(menu);
 
@@ -143,8 +149,8 @@ class Controller {
 
       let order = await Order.create({
         UserId,
-        MenuId: menu.id,
-        price: menu.price
+        MenuId,
+        price: menu.price,
       });
 
       let parameter = {
@@ -174,7 +180,28 @@ class Controller {
         orderId,
       });
 
-      res.json({ message: "Booking Created", transactionToken, orderId });
+      if (transactionToken) {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "galihadityam1@gmail.com",
+            pass: "hzwl evhq ovgn eyqm",
+          },
+        });
+        async function main() {
+          const info = await transporter.sendMail({
+            from: "galihadityam1@gmail.com",
+            to: `bulldog.07.id@gmail.com`,
+            subject: "Order Success",
+            text: "Your Order was successful create",
+          });
+
+          console.log("Message sent: %", info.messageId);
+        }
+        main().catch(console.error);
+      }
+
+      res.json({ message: "Order Created", transactionToken, orderId });
 
       // res.status(201).json({ message: "Order has been create", order });
     } catch (error) {
@@ -193,7 +220,7 @@ class Controller {
         return res.status(404).json({ message: "Booking not found" });
       }
 
-      if (order.status === 'paid') {
+      if (order.status === "paid") {
         return res.status(400).json({ message: "Booking alreay paid" });
       }
 
@@ -212,7 +239,7 @@ class Controller {
         response.data.transaction_status === "settlement" &&
         response.data.status_code === "200"
       ) {
-        await order.update({ status: 'paid' });
+        await order.update({ status: "paid" });
         res.json({ message: `Thank you for your payment` });
       } else {
         res.status(400).json({ message: `Please check your payment detail` });
@@ -243,7 +270,7 @@ class Controller {
         tags: ["tag1", "tag2"],
       });
 
-      await menu.update({ image: imageURL.url })
+      await menu.update({ image: imageURL.url });
 
       // console.log(imageURL);
       res.status(200).json({ message: "Berhasil mengubah image", menu });
