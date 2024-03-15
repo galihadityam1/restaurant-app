@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const Helper = require('../helpers/helper');
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     /**

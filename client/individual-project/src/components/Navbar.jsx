@@ -9,12 +9,12 @@ const navbarList = [
     link: "/",
   },
   {
-    id: 1,
-    name: "About",
-    link: "/",
+    id: 2,
+    name: "Menu",
+    link: "/menu",
   },
   {
-    id: 1,
+    id: 3,
     name: "Contact",
     link: "/",
   },
@@ -27,7 +27,7 @@ const sortList = [
     link: "/",
   },
   {
-    id: 1,
+    id: 2,
     name: "Calories",
     link: "/",
   },
@@ -80,7 +80,7 @@ const Navbar = () => {
                       <li key={id}>
                         <a
                           href=""
-                          className="text-xl inline-block w-full rounded-md p-2 hover::bg-primary/20">
+                          className="text-xl inline-block w-full rounded-md p-2 hover:bg-primary/20">
                           {name}
                         </a>
                       </li>
@@ -91,9 +91,14 @@ const Navbar = () => {
 
               {/* login button */}
               <li>
-                <button className=" flex justify-center items-center gap-2 bg-secondary text-xl h-[40px] text-white px-5 py-2 hover:scale-105 duration-300">
+                <button
+                  className=" flex justify-center items-center gap-2 bg-red-500 text-xl h-[40px] text-white px-5 py-2 hover:scale-105 duration-300"
+                  onClick={() => {
+                    localStorage.removeItem("access_token");
+                    navigate("/login");
+                  }}>
                   <FaUser />
-                  Login
+                  LogOut
                 </button>
               </li>
             </ul>

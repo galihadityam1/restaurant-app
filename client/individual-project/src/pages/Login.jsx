@@ -312,7 +312,7 @@ const Login = () => {
               Sign In
             </h1>
             <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-              Join to Our Community with all time access and free{" "}
+              Join to Our Restaurant and Order
             </h1>
             <div className="mt-4 flex flex-col lg:flex-row items-center justify-between"></div>
             <form action="#" onSubmit={SubmitForm} className="space-y-4">

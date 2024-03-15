@@ -3,6 +3,7 @@ import App from "./App";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
+import Menus from "./pages/Menus";
 
 const router = createBrowserRouter([
   {
@@ -32,10 +33,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-      //   {
-      //     path: "/menu",
-      //     element: <HomePage />,
-      //   }
+        {
+          path: "/menu",
+          element: <Menus />,
+        }
     ],
   },
 ]);

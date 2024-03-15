@@ -3,6 +3,8 @@ const ImageKit = require("imagekit");
 const midtransClient = require("midtrans-client");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
+const {io} = require('../app.js');
+
 
 class Controller {
   static async getAllMenu(req, res, next) {
@@ -240,6 +242,7 @@ class Controller {
         response.data.status_code === "200"
       ) {
         await order.update({ status: "paid" });
+        io.emit('payment_success', { message: 'Thank you for your payment'})
         res.json({ message: `Thank you for your payment` });
       } else {
         res.status(400).json({ message: `Please check your payment detail` });
@@ -251,9 +254,17 @@ class Controller {
 
   static async editImage(req, res, next) {
     try {
+      if (!req.file) {
+        throw { name: "FileNeeded" };
+      }
+
       let menu = await Menu.findOne({
         where: { ...req.params },
       });
+
+      if (!menu) {
+        throw { name: "NoData" };
+      }
 
       const base64Image = req.file.buffer.toString("base64");
       const base64URL = `data:${req.file.mimetype};base64,${base64Image}`;

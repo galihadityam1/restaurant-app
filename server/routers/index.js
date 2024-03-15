@@ -4,6 +4,7 @@ const loginValidation = require("../middlewares/authentication");
 const Controller = require("../controllers/Controller");
 const router = express.Router();
 const uploader = require('../middlewares/uploader.js');
+const { errHandler } = require("../middlewares/errHandler.js");
 
 
 // login and registration section
@@ -25,5 +26,7 @@ router.patch('/menu/:id', uploader.single('image'), Controller.editImage)
 // order
 router.post("/menu/:id", Controller.addOrder);
 router.patch("/payment", Controller.patchPayment);
+
+router.use(errHandler)
 
 module.exports = router;

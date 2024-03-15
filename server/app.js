@@ -1,21 +1,27 @@
 // if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
+require("dotenv").config();
 //   }
-  const express = require("express");
-  const router = require("./routers");
-  const app = express();
-  const port = 3010
-  const cors = require('cors');
-  app.use(cors())
-  
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
-  
-  app.use("/", router);
-  
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-  });
-  
-  module.exports = app;
-  
+const express = require("express");
+const router = require("./routers");
+const app = express();
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+
+app.use(cors());
+
+const server = http.createServer(app);
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3010",
+    methods: ["get", "post"],
+  },
+});
+
+app.use("/", router);
+
+module.exports = {app, io};
