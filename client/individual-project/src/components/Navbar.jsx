@@ -12,9 +12,13 @@ const navbarList = [
     id: 2,
     name: "Menu",
     link: "/menu",
-  }
+  },
+  {
+    id: 3,
+    name: "Add",
+    link: "/add-menu",
+  },
 ];
-
 
 const Navbar = () => {
   let [nav, setNav] = useState(false);
@@ -42,8 +46,6 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
-
-              
 
               {/* logout button */}
               <li>

@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
 import Menus from "./pages/Menus";
 import Detail from "./pages/Detail";
+import AddMenu from "./pages/AddMenu";
 
 const router = createBrowserRouter([
   {
@@ -34,15 +35,18 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-        {
-          path: "/menu",
-          element: <Menus />,
-        },
-        {
-          path: "/menu/:id",
-          element: <Detail />,
-        },
-
+      {
+        path: "/menu",
+        element: <Menus />,
+      },
+      {
+        path: "/add-menu",
+        element: <AddMenu />,
+      },
+      {
+        path: "/menu/:id",
+        element: <Detail />,
+      },
     ],
   },
 ]);

@@ -3,8 +3,7 @@ const ImageKit = require("imagekit");
 const midtransClient = require("midtrans-client");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
-const {io} = require('../app.js');
-
+const { io } = require("../app.js");
 
 class Controller {
   static async getAllMenu(req, res, next) {
@@ -44,13 +43,18 @@ class Controller {
         if (page.size) {
           limit = +page.size;
           sequelizeQuery.limit = limit;
+        } else {
+          sequelizeQuery.limit = limit;
         }
 
         // data yang di skip (untuk halaman selanjutnya)
         if (page.number) {
           pageNumber = +page.number;
           sequelizeQuery.offset = limit * (pageNumber - 1);
+        } else {
+          sequelizeQuery.offset = limit * (pageNumber - 1);
         }
+        
       } else {
         sequelizeQuery.limit = limit;
         sequelizeQuery.offset = limit * (pageNumber - 1);
@@ -190,7 +194,7 @@ class Controller {
 
       const transaction = await snap.createTransaction(parameter);
       let transactionToken = transaction.token;
-      let transactionUrl = transaction.redirect_url
+      let transactionUrl = transaction.redirect_url;
       let orderId = parameter.transaction_details.order_id;
 
       // console.log(transaction);
@@ -220,7 +224,12 @@ class Controller {
         main().catch(console.error);
       }
 
-      res.json({ message: "Order Created", transactionToken, transactionUrl, orderId });
+      res.json({
+        message: "Order Created",
+        transactionToken,
+        transactionUrl,
+        orderId,
+      });
 
       // res.status(201).json({ message: "Order has been create", order });
     } catch (error) {
@@ -259,7 +268,7 @@ class Controller {
         response.data.status_code === "200"
       ) {
         await order.update({ status: "paid" });
-        io.emit('payment_success', { message: 'Thank you for your payment'})
+        io.emit("payment_success", { message: "Thank you for your payment" });
         res.json({ message: `Thank you for your payment` });
       } else {
         res.status(400).json({ message: `Please check your payment detail` });
