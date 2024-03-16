@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import Menus from "./pages/Menus";
 import Detail from "./pages/Detail";
 import AddMenu from "./pages/AddMenu";
+import EditPage from "./pages/EditPage";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/add-menu",
         element: <AddMenu />,
+      },
+      {
+        path: "/edit-menu/:id",
+        element: <EditPage />,
       },
       {
         path: "/menu/:id",
