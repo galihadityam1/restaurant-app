@@ -108,8 +108,15 @@ const Detail = () => {
                       Edit
                     </button>
                   </Link>
+                  <Link to={`/edit-menu/${detail.id}/image`}>
+                    <button
+                      className="h-10 bg-indigo-400 px-6 font-semibold rounded-md border border-balck-800 text-gray-900"
+                      type="button">
+                      Edit Image
+                    </button>
+                  </Link>
                   <button
-                    className="h-10 px-6 font-semibold rounded-md border border-balck-800 text-gray-900"
+                    className="h-10 px-6 font-semibold rounded-md border border-balck-800 text-gray-900 bg-red-600"
                     type="button"
                     onClick={() => {
                       DeleteMenu({id: detail.id})

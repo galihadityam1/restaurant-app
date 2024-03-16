@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BASE_URL from "../assets/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import Submit from "../components/buttons/Submit";
+// import Submit from "../components/buttons/Submit";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -54,11 +54,15 @@ const FormImage = () => {
   return (
     <>
       <div className="flex flex-col justify-center items-center h-screen ">
-        <h1 className="text-center h-16 p-4">Hello Choose Your Picture To be Shown in Table</h1>
+        <h1 className="text-center h-16 p-4">
+          Hello Choose Your Picture To be Shown in Table
+        </h1>
         <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-3 border border-teal-950">
           <form onSubmit={submitForm}>
             <input onChange={handleChange} type="file" name="imgUrl" />
-            <Submit />
+            <button type="submit">
+              Submit
+            </button>
           </form>
         </div>
       </div>

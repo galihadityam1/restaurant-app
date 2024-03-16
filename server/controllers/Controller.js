@@ -143,7 +143,7 @@ class Controller {
         where: { ...req.params },
       });
 
-      res.status(200).json({ message: "lodging successfully deleted", data });
+      res.status(200).json({ message: "menu successfully deleted", data });
     } catch (error) {
       next(error);
     }
