@@ -54,10 +54,10 @@ const Form = ({ menu }) => {
       });
       navigate("/menu");
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
       Swal.fire({
         icon: "error",
-        title: error.response,
+        title: error.response.data.message,
         showConfirmButton: false,
         timer: 1500,
       });
@@ -66,14 +66,14 @@ const Form = ({ menu }) => {
   return (
     <div>
       <form onSubmit={submitForm}>
-        <div class="bg-indigo-50 min-h-screen md:px-20 pt-6">
-          <div class=" bg-white rounded-md px-6 py-10 max-w-2xl mx-auto">
-            <h1 class="text-center text-2xl font-bold text-gray-500 mb-10">
-              {menu ? 'EDIT MENU' : 'ADD MENU'}
+        <div className="bg-indigo-50 min-h-screen md:px-20 pt-6">
+          <div className=" bg-white rounded-md px-6 py-10 max-w-2xl mx-auto">
+            <h1 className="text-center text-2xl font-bold text-gray-500 mb-10">
+              {menu ? "EDIT MENU" : "ADD MENU"}
             </h1>
-            <div class="space-y-4">
+            <div className="space-y-4">
               <div>
-                <label for="title" class="text-lx font-serif">
+                <label className="text-lx font-serif">
                   Name:
                 </label>
                 <input
@@ -83,50 +83,52 @@ const Form = ({ menu }) => {
                   placeholder="name"
                   name="name"
                   id="name"
-                  class="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
+                  className="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
                 />
               </div>
               <div>
-                <label for="name" class="text-lx font-serif">
+                <label className="text-lx font-serif">
                   Price:
                 </label>
                 <input
-                value={input.price}
-                onChange={handleInputChange}
+                  value={input.price}
+                  onChange={handleInputChange}
                   type="number"
                   placeholder="price"
                   name="price"
-                  class="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
+                  className="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
                 />
               </div>
               <div>
-                <label for="email" class="text-lx font-serif">
+                <label className="text-lx font-serif">
                   Calories:
                 </label>
                 <input
-                value={input.calories}
-                onChange={handleInputChange}
+                  value={input.calories}
+                  onChange={handleInputChange}
                   type="number"
                   placeholder="calories"
                   name="calories"
-                  class="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
+                  className="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
                 />
               </div>
               <div>
-                <label for="email" class="text-lx font-serif">
+                <label className="text-lx font-serif">
                   Image:
                 </label>
                 <input
-                value={input.image}
-                onChange={handleInputChange}
+                  value={input.image}
+                  onChange={handleInputChange}
                   type="text"
                   placeholder="image.url"
                   name="image"
-                  class="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
+                  className="ml-2 w-full outline-none py-1 px-2 text-md border-2 rounded-md"
                 />
               </div>
-              <button type="submit" class=" px-6 py-2 mx-auto block rounded-md text-lg font-semibold text-indigo-100 bg-indigo-600  ">
-                {menu? 'EDIT' : 'ADD'} MENU
+              <button
+                type="submit"
+                className=" px-6 py-2 mx-auto block rounded-md text-lg font-semibold text-indigo-100 bg-indigo-600  ">
+                {menu ? "EDIT" : "ADD"} MENU
               </button>
             </div>
           </div>

@@ -54,7 +54,7 @@ class Controller {
         } else {
           sequelizeQuery.offset = limit * (pageNumber - 1);
         }
-        
+
       } else {
         sequelizeQuery.limit = limit;
         sequelizeQuery.offset = limit * (pageNumber - 1);
@@ -156,13 +156,6 @@ class Controller {
       let MenuId = req.params.id;
 
       let menu = await Menu.findByPk(MenuId);
-      // let totalOrder = await Order.findOne({ where: { UserId, MenuId } });
-      // console.log(totalOrder);
-      // if (totalOrder){
-      //   totalOrder.update({ amount: totalOrder.amount + 1})
-      // }
-      // let MenuId = req.params.id;
-      // console.log(menu);
 
       let snap = new midtransClient.Snap({
         isProduction: false,
@@ -197,7 +190,9 @@ class Controller {
       let transactionUrl = transaction.redirect_url;
       let orderId = parameter.transaction_details.order_id;
 
-      // console.log(transaction);
+
+     
+      console.log(transaction);
 
       await order.update({
         orderId,
@@ -240,32 +235,34 @@ class Controller {
 
   static async patchPayment(req, res, next) {
     try {
-      const { orderId } = req.body;
+      const { transaction_id, transaction_status, status_code } = req.body;
 
-      const order = await Order.findOne({ where: { orderId } });
+      let orderId = transaction_id
+
+      const order = await Order.findOne({ where: { orderId: transaction_id } });
 
       if (!order) {
         return res.status(404).json({ message: "Booking not found" });
       }
 
-      if (order.status === "paid") {
-        return res.status(400).json({ message: "Booking alreay paid" });
-      }
+      // if (order.status === "paid") {
+      //   return res.status(400).json({ message: "Booking alreay paid" });
+      // }
 
-      const serverKey = process.env.SERVER_KEY_MIDTRANS;
-      const base64server = Buffer.from(serverKey + ":").toString("base64");
-      const response = await axios.get(
-        `https://api.sandbox.midtrans.com/v2/${orderId}/status`,
-        {
-          headers: {
-            Authorization: `Basic ${base64server}`,
-          },
-        }
-      );
+      // const serverKey = process.env.SERVER_KEY_MIDTRANS;
+      // const base64server = Buffer.from(serverKey + ":").toString("base64");
+      // const response = await axios.get(
+      //   `https://api.sandbox.midtrans.com/v2/${orderId}/status`,
+      //   {
+      //     headers: {
+      //       Authorization: `Basic ${base64server}`,
+      //     },
+      //   }
+      // );
 
       if (
-        response.data.transaction_status === "settlement" &&
-        response.data.status_code === "200"
+        transaction_status === "settlement" &&
+        status_code === "200"
       ) {
         await order.update({ status: "paid" });
         io.emit("payment_success", { message: "Thank you for your payment" });
@@ -313,6 +310,17 @@ class Controller {
       res.status(200).json({ message: "Berhasil mengubah image", menu });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  static async socket(req, res, next) {
+    try {
+      // console.log(req, '<<<< ini req');
+      // io.emit("payment_success", { message: "Thank you for your payment" });
+      console.log("masuk controller socket");
+      res.status(200).json({})
+    } catch (error) {
+      next(error)
     }
   }
 }

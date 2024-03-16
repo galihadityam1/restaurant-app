@@ -7,6 +7,8 @@ import Menus from "./pages/Menus";
 import Detail from "./pages/Detail";
 import AddMenu from "./pages/AddMenu";
 import EditPage from "./pages/EditPage";
+import DetailPayment from "./pages/DetailPayment";
+import FormImage from "./pages/FormImage";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
       {
         path: "/menu/:id",
         element: <Detail />,
+      },
+      {
+        path: "/payment",
+        element: <DetailPayment />,
+      },
+      {
+        path: "/edit-menu/:id/image",
+        element: <FormImage />,
       },
     ],
   },

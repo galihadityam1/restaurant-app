@@ -1,5 +1,7 @@
 const Helper = require("../helpers/helper.js");
 const { User, Order } = require("../models/index.js");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client();
 
 class UserController {
   static async googleLogin(req, res, next) {
@@ -20,7 +22,7 @@ class UserController {
         },
       });
       const payload = { id: user.id };
-      const access_token = signToken(payload);
+      const access_token = Helper.signToken(payload);
       res
         .status(200)
         .json({ message: `Success Logged in as ${email}`, access_token });

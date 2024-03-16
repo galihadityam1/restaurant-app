@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../assets/constant";
 
 const Detail = () => {
   const [detail, setDetail] = useState({});
+  let navigate = useNavigate();
   let { id } = useParams();
   let token = localStorage.getItem("access_token");
   let currency = new Intl.NumberFormat("id-ID", {
@@ -39,11 +40,27 @@ const Detail = () => {
         },
       });
 
-      // navigate(`${data.transactionUrl}`)
+      navigate("/payment", {state: {url: data.data.transactionUrl}} );
+      // window.location.href = data.data.transactionUrl
     } catch (error) {
       console.log(error);
     }
   };
+
+  const DeleteMenu = async ({id}) => {
+    try {
+      await axios({
+        method: 'delete',
+        url: `${BASE_URL}/menu/${id}`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      navigate('/menu')
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     fetchDetail();
@@ -91,6 +108,14 @@ const Detail = () => {
                       Edit
                     </button>
                   </Link>
+                  <button
+                    className="h-10 px-6 font-semibold rounded-md border border-balck-800 text-gray-900"
+                    type="button"
+                    onClick={() => {
+                      DeleteMenu({id: detail.id})
+                    }}>
+                    Delete
+                  </button>
                 </div>
               </div>
             </form>

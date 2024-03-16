@@ -11,6 +11,8 @@ const { AuthorizationAdmin } = require("../middlewares/authorization.js");
 router.post("/login", UserController.login);
 router.post("/register", UserController.register);
 router.post("/google-login", UserController.googleLogin);
+router.patch("/payment", Controller.patchPayment);
+router.get("/socket.io", Controller.socket);
 
 // login validation
 router.use(loginValidation);
@@ -30,7 +32,6 @@ router.patch(
 
 // order
 router.post("/menu/:id", Controller.addOrder);
-router.patch("/payment", Controller.patchPayment);
 
 router.use(errHandler);
 

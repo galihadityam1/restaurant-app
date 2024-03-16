@@ -47,16 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     fullName: {
-      type:DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: `fullName cannot be empty`
-        },
-        notEmpty: {
-          msg: `fullName cannot be empty`
-        },
-      }
+      type:DataTypes.STRING
     },
     role: {
       type: DataTypes.STRING,

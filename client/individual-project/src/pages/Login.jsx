@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../assets/constant";
 import Swal from "sweetalert2";
@@ -48,6 +48,45 @@ const Login = () => {
       });
     }
   };
+
+  const handleCredentialRes = async ({ credential }) => {
+    try {
+      // console.log(credential, "<<<< CREDENTIALLLLLLLLL");
+      const { data } = await axios({
+        method: "post",
+        url: `${BASE_URL}/google-login`,
+        data: {
+          googleToken: credential,
+        },
+      });
+
+      console.log(data, "<<<<<< ?????");
+      localStorage.setItem("access_token", data.access_token)
+
+      navigate("/");
+
+      Swal.fire({
+        title: data.message,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    // console.log(google);
+    google.accounts.id.initialize({
+      client_id:
+        "209533812046-3e40sde7tbtomdgedlidltdnrpplcb4c.apps.googleusercontent.com",
+      callback: handleCredentialRes,
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("buttonDiv"),
+      { theme: "outline", size: "large" } 
+    );
+  }, []);
   return (
     <>
       <div className="flex h-screen">
@@ -354,6 +393,7 @@ const Login = () => {
                 <Link to={"/register"}>
                   <a className="text-black hover:underline">Register</a>
                 </Link>
+                <div className="px-8 md:px-64 lg:px-52" id="buttonDiv"></div><br />
               </p>
             </div>
           </div>

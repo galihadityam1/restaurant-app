@@ -1,5 +1,10 @@
-const {app} = require('../app');
+const {app, io} = require('../app');
 const port = process.env.PORT || 3010
+
+
+io.listen(3011)
+
+// io.listen(port)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
