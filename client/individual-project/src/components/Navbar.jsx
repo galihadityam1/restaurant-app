@@ -12,26 +12,9 @@ const navbarList = [
     id: 2,
     name: "Menu",
     link: "/menu",
-  },
-  {
-    id: 3,
-    name: "Contact",
-    link: "/",
-  },
+  }
 ];
 
-const sortList = [
-  {
-    id: 1,
-    name: "Price",
-    link: "/",
-  },
-  {
-    id: 2,
-    name: "Calories",
-    link: "/",
-  },
-];
 
 const Navbar = () => {
   let [nav, setNav] = useState(false);
@@ -60,36 +43,9 @@ const Navbar = () => {
                 </li>
               ))}
 
-              {/* simple dropdown and links */}
-              <li className="cursot-pointer group relative">
-                <a
-                  href=""
-                  className="inline-block hover:text-primary text-xl font-semibold">
-                  <div className="flex items-center gap-[2px] py-2">
-                    Sort by
-                    <span>
-                      <FaCaretDown className="group-hover:rotate-180 duration-300" />
-                    </span>
-                  </div>
-                </a>
+              
 
-                {/* dropdown section */}
-                <div className=" absolute hidden z-[999] group-hover:block w-[200px] bg-white text-black shadow-md p-2">
-                  <ul>
-                    {sortList.map(({ id, name, link }) => (
-                      <li key={id}>
-                        <a
-                          href=""
-                          className="text-xl inline-block w-full rounded-md p-2 hover:bg-primary/20">
-                          {name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-
-              {/* login button */}
+              {/* logout button */}
               <li>
                 <button
                   className=" flex justify-center items-center gap-2 bg-red-500 text-xl h-[40px] text-white px-5 py-2 hover:scale-105 duration-300"

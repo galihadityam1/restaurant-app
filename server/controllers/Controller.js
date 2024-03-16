@@ -76,6 +76,22 @@ class Controller {
     }
   }
 
+  static async detail(req, res, next) {
+    try {
+      const { id } = req.params;
+      let menu = await Menu.findOne({
+        where: { id },
+      });
+
+      if (!menu) {
+        throw { name: "NoData" };
+      }
+      res.status(200).json({ menu });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async postMenu(req, res, next) {
     try {
       let menu = await Menu.create({
@@ -183,26 +199,26 @@ class Controller {
         orderId,
       });
 
-      // if (transactionToken) {
-      //   const transporter = nodemailer.createTransport({
-      //     service: "gmail",
-      //     auth: {
-      //       user: "galihadityam1@gmail.com",
-      //       pass: "hzwl evhq ovgn eyqm",
-      //     },
-      //   });
-      //   async function main() {
-      //     const info = await transporter.sendMail({
-      //       from: "galihadityam1@gmail.com",
-      //       to: `bulldog.07.id@gmail.com`,
-      //       subject: "Order Success",
-      //       text: "Your Order was successful create",
-      //     });
+      if (transactionToken) {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "galihadityam1@gmail.com",
+            pass: "hzwl evhq ovgn eyqm",
+          },
+        });
+        async function main() {
+          const info = await transporter.sendMail({
+            from: "galihadityam1@gmail.com",
+            to: `bulldog.07.id@gmail.com`,
+            subject: "Order Success",
+            text: "Your Order was successful create",
+          });
 
-      //     console.log("Message sent: %", info.messageId);
-      //   }
-      //   main().catch(console.error);
-      // }
+          console.log("Message sent: %", info.messageId);
+        }
+        main().catch(console.error);
+      }
 
       res.json({ message: "Order Created", transactionToken, transactionUrl, orderId });
 

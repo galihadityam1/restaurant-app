@@ -74,18 +74,16 @@ const Menus = () => {
 
   return (
     <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray- py-6 sm:py-12 bg-gradient-to-br from-fuchsia-50 to-fuchsia-200">
-      <div>
+      <div className="flex justify-center">
         <div className="cursot-pointer group relative justify-center items-center w-15">
-          <a
-            href=""
-            className="inline-block hover:text-primary text-xl font-semibold">
+          <p className="inline-block hover:text-primary text-xl font-semibold">
             <div className="flex items-center justify-center px-10 gap-[2px] py-2 ">
               Sort by
               <span>
                 <FaCaretDown className="group-hover:rotate-180 duration-300" />
               </span>
             </div>
-          </a>
+          </p>
 
           {/* dropdown section */}
           <div className=" absolute hidden z-[999] group-hover:block w-[200px] bg-white text-black shadow-md p-2">
@@ -96,7 +94,7 @@ const Menus = () => {
                     onClick={() => {
                       handleSort({ value });
                     }}
-                    className="text-xl inline-block w-full rounded-md p-2 hover:bg-primary/20">
+                    className="text-xl inline-block w-full rounded-md p-2 hover:bg-primary/20 hover:cursor">
                     {name}
                   </a>
                 </li>
