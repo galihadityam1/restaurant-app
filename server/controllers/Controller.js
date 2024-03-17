@@ -202,7 +202,7 @@ class Controller {
           service: "gmail",
           auth: {
             user: "galihadityam1@gmail.com",
-            pass: "hzwl evhq ovgn eyqm",
+            pass: process.env.GOOGLE_PASS,
           },
         });
         async function main() {

@@ -25,6 +25,7 @@ const DetailPayment = () => {
       });
 
       Swal.fire({
+        icon: 'success',
         title: "success",
         text: data.message,
         showConfirmButton: false,
