@@ -40,7 +40,7 @@ const Detail = () => {
         },
       });
 
-      navigate("/payment", {state: {url: data.data.transactionUrl}} );
+      navigate("/payment", {state: {url: data.data.transactionUrl, orderId: data.data.orderId}} );
       // window.location.href = data.data.transactionUrl
     } catch (error) {
       console.log(error);

@@ -3,7 +3,6 @@ const ImageKit = require("imagekit");
 const midtransClient = require("midtrans-client");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
-const { io } = require("../app.js");
 
 class Controller {
   static async getAllMenu(req, res, next) {
@@ -235,37 +234,36 @@ class Controller {
 
   static async patchPayment(req, res, next) {
     try {
-      const { transaction_id, transaction_status, status_code } = req.body;
+      const { orderId } = req.body;
+      // console.log(req.body);
 
-      let orderId = transaction_id
-
-      const order = await Order.findOne({ where: { orderId: transaction_id } });
+      const order = await Order.findOne({ where: { orderId: orderId } });
 
       if (!order) {
         return res.status(404).json({ message: "Booking not found" });
       }
 
-      // if (order.status === "paid") {
-      //   return res.status(400).json({ message: "Booking alreay paid" });
-      // }
+      if (order.status === "paid") {
+        return res.status(400).json({ message: "Booking alreay paid" });
+      }
 
-      // const serverKey = process.env.SERVER_KEY_MIDTRANS;
-      // const base64server = Buffer.from(serverKey + ":").toString("base64");
-      // const response = await axios.get(
-      //   `https://api.sandbox.midtrans.com/v2/${orderId}/status`,
-      //   {
-      //     headers: {
-      //       Authorization: `Basic ${base64server}`,
-      //     },
-      //   }
-      // );
+      const serverKey = process.env.SERVER_KEY_MIDTRANS;
+      const base64server = Buffer.from(serverKey + ":").toString("base64");
+      const response = await axios.get(
+        `https://api.sandbox.midtrans.com/v2/${orderId}/status`,
+        {
+          headers: {
+            Authorization: `Basic ${base64server}`,
+          },
+        }
+      );
 
       if (
-        transaction_status === "settlement" &&
-        status_code === "200"
+        response.data.transaction_status === "settlement" &&
+        response.data.status_code === "200"
       ) {
         await order.update({ status: "paid" });
-        io.emit("payment_success", { message: "Thank you for your payment" });
+        // io.emit("payment_success", { message: "Thank you for your payment" });
         res.json({ message: `Thank you for your payment` });
       } else {
         res.status(400).json({ message: `Please check your payment detail` });

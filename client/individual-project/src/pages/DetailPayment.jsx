@@ -1,35 +1,61 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import {io} from 'socket.io-client'
+import { useLocation, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 import BASE_URL from "../assets/constant";
 import Swal from "sweetalert2";
-const socket = io(`http://localhost:3011/`)
+import axios from "axios";
+const socket = io(`http://localhost:3011/`);
 
 const DetailPayment = () => {
   const { state } = useLocation();
-  const { url } = state;
+  const { url, orderId } = state;
+  const navigate = useNavigate();
   const payment = () => {
-    window.open(url, '_blank')
+    window.open(url, "_blank");
   };
 
-  useEffect(() => {
-    console.log('masuk useEffect');
-    socket.on(`payment_success`, (data) => {
-        Swal.fire({
-            title: 'success',
-            text: data.message,
-        })
-    })
+  //   console.log(url, orderId);
 
-    socket.emit('reactEvent', {message: 'Hello from react!'})
+  const donePayment = async () => {
+    try {
+      let { data } = await axios({
+        method: "patch",
+        url: `${BASE_URL}/payment`,
+        data: { orderId: orderId },
+      });
 
-    socket.on("payment test", (data) => { 
-        console.log(data);
-      })
-    return () => {
-        socket.disconnect()
+      Swal.fire({
+        title: "success",
+        text: data.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      navigate("/menu");
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: error.response.data.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
-  }, [])
+  };
+  //   useEffect(() => {
+  //     console.log("masuk useEffect");
+  //     socket.on(`payment_success`, (data) => {
+  //       console.log(data);
+  //     });
+
+  //     socket.emit("reactEvent", { message: "Hello from react!" });
+
+  //     socket.on("payment test", (data) => {
+  //       console.log(data);
+  //     });
+  //     return () => {
+  //       socket.disconnect();
+  //     };
+  //   }, []);
 
   return (
     <div>
@@ -74,7 +100,9 @@ const DetailPayment = () => {
                     <p x-text="cardholder !== '' ? cardholder : 'Card holder'" />
                     <div className="">
                       <span x-text="expired.month" />
-                      <span x-show="expired.month !== ''">Click Pay Now nya Bang</span>
+                      <span x-show="expired.month !== ''">
+                        Click Pay Now nya Bang
+                      </span>
                       <span x-text="expired.year" />
                     </div>
                   </div>
@@ -112,6 +140,15 @@ const DetailPayment = () => {
                 x-bind:disabled="!isValid"
                 onClick={payment}>
                 Pay now
+              </button>
+            </footer>
+            <footer className="mt-6 p-4 gap-4 flex flex-col">
+              <p className="text-xl font-bold text-center text-red-600">Clik Ketika Sudah Membayar</p>
+              <button
+                className="submit-button px-4 py-3 rounded-full bg-blue-300 text-blue-900 focus:ring focus:outline-none w-full text-xl font-semibold transition-colors"
+                x-bind:disabled="!isValid"
+                onClick={donePayment}>
+                Done Payment
               </button>
             </footer>
           </div>
